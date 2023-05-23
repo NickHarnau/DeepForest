@@ -28,7 +28,7 @@ def evaluate_image(predictions, ground_df, root_dir, savedir=None):
     """
     plot_names = predictions["image_path"].unique()
     if len(plot_names) > 1:
-        raise ValueError("More than one plot passed to image crown: {}".format(plot_name))
+        raise ValueError("More than one plot passed to image crown: {}".format(plot_names[0]))
     else:
         plot_name = plot_names[0]
 
@@ -57,28 +57,24 @@ def evaluate_image(predictions, ground_df, root_dir, savedir=None):
     return result
 
 
-def compute_class_recall(results):
-    """Given a set of evaluations, what proportion of predicted boxes match. True boxes which are not matched to predictions do not count against accuracy."""
+def compute_class_recall(results, predictions):
     # Per class recall and precision
     class_recall_dict = {}
     class_precision_dict = {}
     class_size = {}
-
-    box_results = results[results.predicted_label.notna()]
-    if box_results.empty:
+    df_IoUthres = results.loc[results["match"]==1]
+    if df_IoUthres.empty:
         print("No predictions made")
         class_recall = None
         return class_recall
 
-    for name, group in box_results.groupby("true_label"):
-        class_recall_dict[name] = sum(
-            group.true_label == group.predicted_label) / group.shape[0]
-        number_of_predictions = box_results[box_results.predicted_label == name].shape[0]
+    for name, group in df_IoUthres.groupby("true_label"):
+        class_recall_dict[name] = sum(group.true_label == group.predicted_label)/results.loc[results["true_label"]==name].shape[0]
+        number_of_predictions = predictions[predictions.label==name].shape[0]
         if number_of_predictions == 0:
             class_precision_dict[name] = 0
         else:
-            class_precision_dict[name] = sum(
-                group.true_label == group.predicted_label) / number_of_predictions
+            class_precision_dict[name] = sum(group.true_label == group.predicted_label) / number_of_predictions
         class_size[name] = group.shape[0]
 
     class_recall = pd.DataFrame({
@@ -154,7 +150,7 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None):
     box_precision = np.mean(box_precisions)
     box_recall = np.mean(box_recalls)
 
-    class_recall = compute_class_recall(results)
+    class_recall = compute_class_recall(results, predictions)
 
     return {
         "results": results,
