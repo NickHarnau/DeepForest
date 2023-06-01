@@ -151,14 +151,15 @@ def label_to_color(label):
         color_dict[index] = color
 
     # hand pick the first few colors
-    color_dict[0] = (255, 255, 0)
-    color_dict[1] = (71, 99, 255)
-    color_dict[2] = (255, 0, 0)
-    color_dict[3] = (50, 205, 50)
-    color_dict[4] = (214, 112, 214)
-    color_dict[5] = (60, 20, 220)
-    color_dict[6] = (63, 133, 205)
-    color_dict[7] = (255, 144, 30)
-    color_dict[8] = (0, 215, 255)
+    ### TODO change Order
+    #color_dict[0] = (255, 255, 0) -> is yellow, bad contrast
+    color_dict[0] = (71, 99, 255) #blue
+    #color_dict[2] = (255, 0, 0) -> is red -> bad contrast
+    color_dict[1] = (50, 205, 50) #green
+    color_dict[2] = (214, 112, 214) # purple
+    #color_dict[5] = (60, 20, 220)
+    #color_dict[6] = (63, 133, 205)
+    #color_dict[7] = (255, 144, 30)
+    #color_dict[8] = (0, 215, 255)
 
     return color_dict[label]
