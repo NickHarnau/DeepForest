@@ -71,7 +71,7 @@ def plot_prediction_and_targets(image, predictions, targets, image_name, savedir
     return figure_path
 
 
-def plot_prediction_dataframe(df, root_dir, ground_truth=None, savedir=None):
+def plot_prediction_dataframe(df, root_dir, ground_truth=None, savedir=None, thickness=3):
     """For each row in dataframe, call plot predictions. For multi-class labels, boxes will be colored by labels. Ground truth boxes will all be same color, regardless of class.
     Args:
         df: a pandas dataframe with image_path, xmin, xmax, ymin, ymax and label columns. The image_path column should be the relative path from root_dir, not the full path.
@@ -84,11 +84,11 @@ def plot_prediction_dataframe(df, root_dir, ground_truth=None, savedir=None):
     written_figures = []
     for name, group in df.groupby("image_path"):
         image = np.array(Image.open("{}/{}".format(root_dir, name)))[:, :, ::-1].copy()
-        image = plot_predictions(image, group)
+        image = plot_predictions(image, group, thickness=thickness)
 
         if ground_truth is not None:
             annotations = ground_truth[ground_truth.image_path == name]
-            image = plot_predictions(image, annotations)
+            image = plot_predictions(image, annotations, thickness=thickness)
 
         if savedir:
             figure_name = "{}/{}.png".format(savedir, os.path.splitext(name)[0])
