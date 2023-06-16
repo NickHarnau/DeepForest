@@ -122,7 +122,7 @@ def plot_predictions(image, df, color=None, thickness=1):
         if not ptypes.is_numeric_dtype(df.label):
             warnings.warn("No color was provided and the label column is not numeric. "
                           "Using a single default color.")
-            color = (0, 165, 255)
+            color=(255, 165, 0)
 
     for index, row in df.iterrows():
         if not color:

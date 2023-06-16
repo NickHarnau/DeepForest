@@ -87,7 +87,7 @@ def compute_class_recall(results, predictions):
     return class_recall
 
 
-def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None):
+def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None, average = False):
     """Image annotated crown evaluation routine
     submission can be submitted as a .shp, existing pandas dataframe or .csv path
 
@@ -147,8 +147,12 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None):
         results.append(result)
 
     results = pd.concat(results)
-    box_precision = np.mean(box_precisions)
-    box_recall = np.mean(box_recalls)
+    box_precision = sum(results["match"]) / predictions.shape[0]
+    box_recall = sum(results["match"]) / results.shape[0]
+
+    if average:
+        box_precision = np.mean(box_precisions)
+        box_recall = np.mean(box_recalls)
 
     class_recall = compute_class_recall(results, predictions)
 
