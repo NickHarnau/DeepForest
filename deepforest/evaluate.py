@@ -148,22 +148,22 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None, 
         results.append(result)
 
     results = pd.concat(results)
-    box_precision = 0
-    box_recall = 0
-    if predictions.shape[0] is not None and sum(results["match"]) is not None: # check if predictions were made
+    try:
         box_precision = sum(results["match"]) / predictions.shape[0]
-    if sum(results["match"]) is not None and results.shape[0] is not None: # check if
-        box_recall = sum(results["match"]) / results.shape[0] #use of results df, because this is always displaying the ground truth data
-
-    if average:
-        box_precision = np.mean(box_precisions)
-        box_recall = np.mean(box_recalls)
+    except:
+        box_precision = 0
+    try:
+        box_recall = sum(results["match"]) / results.shape[0]
+    except:
+        box_recall = 0
 
     class_recall = compute_class_recall(results, predictions)
+
 
     return {
         "results": results,
         "box_precision": box_precision,
         "box_recall": box_recall,
-        "class_recall": class_recall
+        "class_recall": class_recall,
+
     }
