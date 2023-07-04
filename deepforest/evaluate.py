@@ -147,7 +147,9 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None, 
         results.append(result)
 
     results = pd.concat(results)
-    box_precision = sum(results["match"]) / predictions.shape[0]
+    box_precision = 0
+    if predictions.shape[0] == int:
+        box_precision = sum(results["match"]) / predictions.shape[0]
     box_recall = sum(results["match"]) / results.shape[0] #use of results df, because this is always displaying the ground truth data
 
     if average:
