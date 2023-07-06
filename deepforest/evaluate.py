@@ -156,13 +156,16 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None, 
         box_recall = sum(results["match"]) / results.shape[0]
     except:
         box_recall = 0
+    if average:
+        box_precision = np.mean(box_precisions)
+        box_recall = np.mean(box_recalls)
 
     class_recall = compute_class_recall(results, predictions)
     df_iou = results.loc[results["IoU"] > 0.4]
     df_iou["correct"] = np.where(df_iou["predicted_label"] == df_iou["true_label"], 1, 0)
     TP = sum(df_iou["correct"])
     FP = predictions.shape[0] - sum(df_iou["correct"])
-    FN = result["results"].shape[0] - sum(df_iou["correct"])
+    FN = results.shape[0] - sum(df_iou["correct"])
     overall_precision =TP/(TP+FP)
     overall_recall =TP/(TP+FN)
 
