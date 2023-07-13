@@ -163,3 +163,26 @@ def label_to_color(label):
     #color_dict[8] = (0, 215, 255)
 
     return color_dict[label]
+
+
+def visualization(predictions, root_dir, colors = None, ground_truth = None, save_dir = None ):
+  images = predictions["image_path"].unique()
+  for image_path in images:
+    total = predictions.loc[predictions["image_path"]==image_path]
+    img = cv2.imread(root_dir+ "/"+ image_path)
+    if ground_truth is not None:
+      gdfs = ground_truth.loc[ground_truth["image_path"]==image_path]
+      gdfs["label"] = -1
+      total = pd.concat([total, gdfs], axis=0)
+    for index, row in total.iterrows():
+      if colors:
+        color = colors[row["label"]]
+      else:
+        color = (255,153,51)
+      start_point = (int(row["xmin"]), int(row["ymin"]))
+      end_point = (int(row["xmax"]), int(row["ymax"]))
+      cv2.rectangle(img, start_point, end_point, color=color, thickness=20)
+    if save_dir:
+      cv2.imwrite(save_dir + image_path  + ".png", img)
+    else:
+      plt.imshow(img[:,:,::-1])
