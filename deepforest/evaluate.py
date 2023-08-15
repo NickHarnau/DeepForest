@@ -166,8 +166,14 @@ def evaluate(predictions, ground_df, root_dir, iou_threshold=0.4, savedir=None, 
     TP = sum(df_iou["correct"])
     FP = predictions.shape[0] - sum(df_iou["correct"])
     FN = results.shape[0] - sum(df_iou["correct"])
-    overall_precision =TP/(TP+FP)
-    overall_recall =TP/(TP+FN)
+    try:
+        overall_precision =TP/(TP+FP)
+    except:
+        overall_precision = 0
+    try:
+         overall_recall =TP/(TP+FN)
+    except:
+        overall_recall = 0
 
 
     return {

@@ -176,13 +176,13 @@ def visualization(predictions, root_dir, colors = None, ground_truth = None, sav
       total = pd.concat([total, gdfs], axis=0)
     for index, row in total.iterrows():
       if colors:
-        color = colors[row["label"]]
+        color = colors[int(row["label"])]
       else:
         color = (255,153,51)
       start_point = (int(row["xmin"]), int(row["ymin"]))
       end_point = (int(row["xmax"]), int(row["ymax"]))
       cv2.rectangle(img, start_point, end_point, color=color, thickness=20)
     if save_dir:
-      cv2.imwrite(save_dir + image_path  + ".png", img)
+      cv2.imwrite(root_dir+save_dir + image_path  + ".png", img)
     else:
       plt.imshow(img[:,:,::-1])
