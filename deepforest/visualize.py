@@ -164,15 +164,17 @@ def label_to_color(label):
 
     return color_dict[label]
 
-
 def visualization(predictions, root_dir, colors = None, ground_truth = None, save_dir = None ):
   images = predictions["image_path"].unique()
+
+  if ground_truth is not None:
+    colors.append((0,60,255)) #red
   for image_path in images:
     total = predictions.loc[predictions["image_path"]==image_path]
     img = cv2.imread(root_dir+ "/"+ image_path)
     if ground_truth is not None:
       gdfs = ground_truth.loc[ground_truth["image_path"]==image_path]
-      gdfs["label"] = -1
+      gdfs["label"] = len(colors) - 1
       total = pd.concat([total, gdfs], axis=0)
     for index, row in total.iterrows():
       if colors:
